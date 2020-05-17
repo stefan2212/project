@@ -1,66 +1,42 @@
 package com.tim.project.service;
 
 import com.tim.project.model.Shop;
+import com.tim.project.repository.ShopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ShopService {
-
-    private List<Shop> shops;
-
-    public ShopService() {
-        shops = new ArrayList(Arrays.asList(
-                        new Shop(1, "Kaufland", "Supermarket", "Timisoara"),
-                        new Shop(2, "Profi", "Supermarket", "Iasi"),
-                        new Shop(3, "Kaufland", "Supermarket", "Brasov")
-                ));
-    }
+    @Autowired
+    private ShopRepository shopRepository;
 
     public List<Shop> getAllShops() {
-        return shops;
+        return (List<Shop>) shopRepository.findAll();
     }
 
     public Shop getShopById(int id) {
-        for (Shop i : shops) {
-            if (i.getId() == id) {
-                return i;
-            }
-        }
-        return new Shop();
+        return shopRepository.findById(id).orElse(new Shop());
     }
 
     public List<Shop> getShopsByName(String name) {
-        List<Shop> shops = new ArrayList();
-        for (Shop shop : getAllShops()) {
-            if (shop.getName().equals(name)) {
-                shops.add(shop);
-            }
-        }
-        return shops;
+        return shopRepository.findAllByName(name);
+    }
+
+    public List<Shop> getShopsByType(String type) {
+        return shopRepository.findByType(type);
     }
 
     public void addShop(Shop shop) {
-        shops.add(shop);
+        shopRepository.save(shop);
     }
 
-    public Shop updateShop (Shop shop) {
-        Shop originalShop = getShopById(shop.getId());
-        shops.remove(originalShop);
-        originalShop.setId(shop.getId());
-        originalShop.setName(shop.getName());
-        originalShop.setLocation(shop.getLocation());
-        originalShop.setType(shop.getType());
-        shops.add(shop);
-        return originalShop;
+    public Shop updateShop(Shop shop) {
+        return shopRepository.save(shop);
     }
 
     public void deleteShop(int id) {
-        Shop shop = getShopById(id);
-        shops.remove(shop);
+        shopRepository.deleteById(id);
     }
 }
