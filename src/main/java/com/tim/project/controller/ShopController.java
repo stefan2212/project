@@ -15,6 +15,7 @@ public class ShopController {
     private ShopService shopService;
     @RequestMapping(method = RequestMethod.GET)
     public List<Shop> getAllShops() {
+        shopService.doHack();
         return shopService.getAllShops();
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
